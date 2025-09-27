@@ -30,39 +30,41 @@
 
 function loadCategories() {
   fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
-  .then((res) => res.json())
-  .then(data=>displayCategories(data.categories));
-}
-function loadVideos(){
-    fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
     .then((res) => res.json())
-    .then(data => displayVideos(data.videos));
+    .then((data) => displayCategories(data.categories));
 }
+function loadVideos() {
+  fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.videos));
+}
+const loadCategoryVideos = (id) => {
+  const url = `https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
 
-
-
-
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category));
+};
 
 function displayCategories(categories) {
-    const categoryContainer = document.getElementById("category-container");
+  const categoryContainer = document.getElementById("category-container");
 
-    for( let cat of categories )
-    {
-        const categoryDiv = document.createElement("div");
-        categoryDiv.innerHTML = `
-        <button class="btn btn-sm hover:bg-red-500 hover:text-white">${cat.category}</button>
-        `
-        categoryContainer.append(categoryDiv);
-        
-    }
+  for (let cat of categories) {
+    const categoryDiv = document.createElement("div");
+    categoryDiv.innerHTML = `
+        <button onclick = "loadCategoryVideos(${cat.category_id})" class="btn btn-sm hover:bg-red-500 hover:text-white">${cat.category}</button>
+        `;
+    categoryContainer.append(categoryDiv);
+  }
 }
 
 const displayVideos = (videos) => {
-    const videoContainer = document.getElementById("video-container");
+  const videoContainer = document.getElementById("video-container");
+  videoContainer.innerHTML = "";
 
-    videos.forEach((video)  => {
-        const videoCard = document.createElement("div");
-        videoCard.innerHTML = `
+  videos.forEach((video) => {
+    const videoCard = document.createElement("div");
+    videoCard.innerHTML = `
 
        <div class="card bg-base-100 ">
         <figure class="relative">
@@ -95,13 +97,9 @@ const displayVideos = (videos) => {
       </div>
 
 
-        `
-        videoContainer.append(videoCard);
-    })
-}
-
-
-
+        `;
+    videoContainer.append(videoCard);
+  });
+};
 
 loadCategories();
-loadVideos();
